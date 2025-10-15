@@ -49,6 +49,12 @@ body {
   width: 100%;
   margin-bottom: 16px;
   padding: 0 8px;
+  transition: max-width 0.3s ease;
+}
+
+.calendar-container.year-view {
+  max-width: 1200px;
+  min-width: 800px;
 }
 
 .calendar-header {
@@ -164,4 +170,92 @@ body {
 .day.other-month {
   opacity: 0.35;
   color: var(--other-month-color);
+}
+
+/* Year View Styles */
+.year-grid {
+  padding: 20px;
+}
+
+.months {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(175px, 1fr));
+  gap: 25px;
+  max-width: 100%;
+  justify-content: center;
+}
+
+.month-card {
+  background: var(--bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 15px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.month-card:hover {
+  background: var(--day-hover);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.month-card.current-month {
+  background: var(--accent-color);
+  color: white;
+  border-color: var(--accent-color);
+}
+
+.month-card.current-month:hover {
+  background: var(--accent-color);
+  opacity: 0.9;
+}
+
+.month-name {
+  font-size: 1.1em;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 10px;
+  color: var(--text-color);
+}
+
+.month-card.current-month .month-name {
+  color: white;
+}
+
+.month-preview {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  font-size: 0.7em;
+}
+
+.month-preview-day {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-color);
+  opacity: 0.7;
+  border-radius: 50%;
+}
+
+.month-card.current-month .month-preview-day {
+  color: white;
+}
+
+.month-preview-day.today {
+  background: rgba(255, 255, 255, 0.3);
+  font-weight: bold;
+  opacity: 1;
+}
+
+@media (max-width: 600px) {
+  .months {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+  }
+
+  .month-card {
+    padding: 10px;
+  }
 }
