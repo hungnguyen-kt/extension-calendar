@@ -18,7 +18,9 @@ function renderCalendar() {
 
     daysContainer.innerHTML = '';
 
-    const firstDay = new Date(displayYear, displayMonth, 1).getDay();
+    const firstDayOfMonth = new Date(displayYear, displayMonth, 1).getDay();
+    // Adjust for Monday start (0=Sunday, 1=Monday, etc.)
+    const firstDay = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1;
     const daysInMonth = new Date(displayYear, displayMonth + 1, 0).getDate();
     const daysInPrevMonth = new Date(displayYear, displayMonth, 0).getDate();
 
