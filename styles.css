@@ -174,13 +174,13 @@ body {
 
 /* Year View Styles */
 .year-grid {
-  padding: 20px;
+  padding: 8px 0;
 }
 
 .months {
   display: grid;
   grid-template-columns: repeat(4, minmax(175px, 1fr));
-  gap: 25px;
+  gap: 8px;
   max-width: 100%;
   justify-content: center;
 }
