@@ -51,9 +51,8 @@ function renderMonthView() {
   monthYear.textContent = `${months[displayMonth]} ${displayYear}`;
 
   const today = new Date();
-  currentDateEl.textContent = `Today: ${days[today.getDay()]}, ${
-    months[today.getMonth()]
-  } ${today.getDate()}`;
+  currentDateEl.textContent = `Today: ${days[today.getDay()]}, ${months[today.getMonth()]
+    } ${today.getDate()}`;
 
   daysContainer.innerHTML = "";
 
