@@ -150,6 +150,17 @@ function renderYearView() {
     monthName.className = "month-name";
     monthName.textContent = months[month];
 
+    // Add weekday headers for year view
+    const weekdaysRow = document.createElement("div");
+    weekdaysRow.className = "month-weekdays";
+    const weekdayNames = ["M", "T", "W", "T", "F", "S", "S"];
+    weekdayNames.forEach(day => {
+      const weekdayDiv = document.createElement("div");
+      weekdayDiv.className = "month-weekday";
+      weekdayDiv.textContent = day;
+      weekdaysRow.appendChild(weekdayDiv);
+    });
+
     const monthPreview = document.createElement("div");
     monthPreview.className = "month-preview";
 
@@ -183,6 +194,7 @@ function renderYearView() {
     }
 
     monthCard.appendChild(monthName);
+    monthCard.appendChild(weekdaysRow);
     monthCard.appendChild(monthPreview);
     monthsContainer.appendChild(monthCard);
   }
