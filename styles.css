@@ -171,11 +171,6 @@ body {
   color: var(--other-month-color);
 }
 
-/* Year View Styles */
-.year-grid {
-  padding: 8px 0;
-}
-
 .months {
   display: grid;
   grid-template-columns: repeat(4, minmax(175px, 1fr));
