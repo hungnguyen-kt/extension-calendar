@@ -47,9 +47,11 @@ body {
   max-width: 800px;
   min-width: 400px;
   width: 100%;
-  margin-bottom: 16px;
-  padding: 0 8px;
+  padding: 16px;
   transition: max-width 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .calendar-container.year-view {
@@ -60,10 +62,8 @@ body {
 .calendar-header {
   background: var(--bg-color);
   color: var(--header-text);
-  padding: 16px 8px;
   text-align: center;
   position: relative;
-  border-bottom: 1px solid var(--border-color);
 }
 
 .nav-buttons {
@@ -106,7 +106,6 @@ body {
 }
 
 .calendar-grid {
-  padding: 8px;
   min-height: 295px;
 }
 
