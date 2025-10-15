@@ -7,6 +7,36 @@
   <meta name="description" content="A dynamic and interactive calendar extension with modern design. Navigate through months and years with ease, featuring a clean interface and responsive layout.">
   <title>Dynamic Calendar</title>
   <style>
+    :root {
+      /* Light mode colors */
+      --bg-color: #ffffff;
+      --text-color: #333333;
+      --header-text: #000000;
+      --accent-color: #ff3b30;
+      --weekday-color: #6a5af9;
+      --nav-btn-bg: rgba(255, 255, 255, 0.15);
+      --nav-btn-hover: rgba(255, 255, 255, 0.25);
+      --day-hover: #e6e9f5;
+      --other-month-color: #999999;
+      --border-color: #e0e0e0;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        /* Dark mode colors */
+        --bg-color: #1a1a1a;
+        --text-color: #ffffff;
+        --header-text: #ffffff;
+        --accent-color: #ff453a;
+        --weekday-color: #8b7cf6;
+        --nav-btn-bg: rgba(255, 255, 255, 0.1);
+        --nav-btn-hover: rgba(255, 255, 255, 0.2);
+        --day-hover: #2d2d2d;
+        --other-month-color: #666666;
+        --border-color: #333333;
+      }
+    }
+
     * {
       margin: 0;
       padding: 0;
@@ -14,20 +44,30 @@
       font-family: 'Inter', sans-serif;
     }
 
+    body {
+      background: var(--bg-color);
+      color: var(--text-color);
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
     .calendar-container {
-      background: #ffffff;
+      background: var(--bg-color);
       overflow: hidden;
       max-width: 800px;
       min-width: 300px;
       width: 100%;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     }
 
     .calendar-header {
-      background: #fff;
-      color: #000;
+      background: var(--bg-color);
+      color: var(--header-text);
       padding: 30px 20px;
       text-align: center;
       position: relative;
+      border-bottom: 1px solid var(--border-color);
     }
 
     .nav-buttons {
@@ -38,9 +78,9 @@
     }
 
     .nav-btn {
-      background: rgba(255, 255, 255, 0.15);
-      border: none;
-      color: #000;
+      background: var(--nav-btn-bg);
+      border: 1px solid var(--border-color);
+      color: var(--text-color);
       padding: 10px 20px;
       border-radius: 10px;
       cursor: pointer;
@@ -50,7 +90,7 @@
     }
 
     .nav-btn:hover {
-      background: rgba(255, 255, 255, 0.25);
+      background: var(--nav-btn-hover);
       transform: scale(1.05);
     }
 
@@ -58,7 +98,7 @@
       font-size: 1.3em;
       text-transform: capitalize;
       letter-spacing: 1px;
-      color: #ff3b30;
+      color: var(--accent-color);
       font-weight: bold;
       margin-bottom: 4px;
     }
@@ -66,7 +106,7 @@
     .calendar-header p {
       font-size: 1em;
       opacity: 0.9;
-      color: #000;
+      color: var(--header-text);
     }
 
     .calendar-grid {
@@ -84,7 +124,7 @@
     .weekday {
       text-align: center;
       font-weight: 600;
-      color: #6a5af9;
+      color: var(--weekday-color);
       padding: 10px 0;
       font-size: 0.9em;
     }
@@ -102,13 +142,13 @@
       justify-content: center;
       font-size: 1.05em;
       transition: all 0.25s ease;
-      color: #333;
+      color: var(--text-color);
       border-radius: 50%;
       font-weight: bold;
     }
 
     .day:hover {
-      background: #e6e9f5;
+      background: var(--day-hover);
       transform: scale(1.05);
       cursor: default;
     }
@@ -124,7 +164,7 @@
     }
 
     .day.today {
-      background: #ff3b30;
+      background: var(--accent-color);
       color: white;
       font-weight: bold;
       box-shadow: 0 4px 12px rgba(255, 59, 48, 0.25);
@@ -136,7 +176,7 @@
 
     .day.other-month {
       opacity: 0.35;
-      color: #999;
+      color: var(--other-month-color);
     }
 
     @media (max-width: 600px) {
