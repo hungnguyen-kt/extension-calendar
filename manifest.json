@@ -1,0 +1,10 @@
+{
+  "name": "Calendar Extensions",
+  "description": "A Chrome extension to enhance calendar functionalities.",
+  "version": "1.0",
+  "manifest_version": 3,
+  "action": {
+    "default_popup": "index.html",
+    "default_icon": "calendar_extensions.png"
+  }
+}
