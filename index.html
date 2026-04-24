@@ -4,7 +4,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="A dynamic and interactive calendar extension with modern design. Navigate through months and years with ease, featuring a clean interface and responsive layout.">
+  <meta name="description"
+    content="A dynamic and interactive calendar extension with modern design. Navigate through months and years with ease, featuring a clean interface and responsive layout.">
   <title>Dynamic Calendar</title>
   <link rel="stylesheet" href="styles.css">
 </head>
@@ -13,10 +14,10 @@
   <div class="calendar-container">
     <div class="calendar-header">
       <div class="nav-buttons">
-        <button class="nav-btn" id="prevBtn">←</button>
-        <button class="nav-btn" id="todayBtn">Today</button>
-        <button class="nav-btn" id="viewToggleBtn">Year</button>
-        <button class="nav-btn" id="nextBtn">→</button>
+        <button class="nav-btn" id="prevBtn" type="button" aria-label="Previous">←</button>
+        <button class="nav-btn" id="todayBtn" type="button">Today</button>
+        <button class="nav-btn" id="viewToggleBtn" type="button" aria-label="Toggle calendar view">Year</button>
+        <button class="nav-btn" id="nextBtn" type="button" aria-label="Next">→</button>
       </div>
       <h1 id="monthYear" class="title"></h1>
       <p id="currentDate"></p>
@@ -33,12 +34,12 @@
       </div>
       <div class="days" id="calendarDays"></div>
     </div>
-    <div class="year-grid" id="yearGrid" style="display: none;">
+    <div class="year-grid is-hidden" id="yearGrid">
       <div class="months" id="monthsContainer"></div>
     </div>
   </div>
 
-  <script src="calendar.js"></script>
+  <script src="calendar.js" defer></script>
 </body>
 
 </html>

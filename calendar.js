@@ -1,7 +1,64 @@
-let currentDate = new Date();
-let displayMonth = currentDate.getMonth();
-let displayYear = currentDate.getFullYear();
-let currentView = "month"; // 'month' or 'year'
+const MONTH_NAMES = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
+const DAY_NAMES = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
+
+const MINI_WEEKDAY_NAMES = ["M", "T", "W", "T", "F", "S", "S"];
+
+const today = new Date();
+let displayMonth = today.getMonth();
+let displayYear = today.getFullYear();
+let currentView = "month";
+
+let monthYearEl;
+let currentDateEl;
+let calendarDaysEl;
+let calendarGridEl;
+let yearGridEl;
+let monthsContainerEl;
+let calendarContainerEl;
+let viewToggleBtnEl;
+
+function getMondayFirstIndex(dayIndex) {
+  return dayIndex === 0 ? 6 : dayIndex - 1;
+}
+
+function isToday(day, month, year) {
+  return (
+    day === today.getDate() &&
+    month === today.getMonth() &&
+    year === today.getFullYear()
+  );
+}
+
+function createDiv(className, textContent = "") {
+  const element = document.createElement("div");
+  element.className = className;
+  if (textContent !== "") {
+    element.textContent = textContent;
+  }
+  return element;
+}
 
 function renderCalendar() {
   if (currentView === "month") {
@@ -12,128 +69,53 @@ function renderCalendar() {
 }
 
 function renderMonthView() {
-  const monthYear = document.getElementById("monthYear");
-  const currentDateEl = document.getElementById("currentDate");
-  const daysContainer = document.getElementById("calendarDays");
-  const calendarGrid = document.querySelector(".calendar-grid");
-  const yearGrid = document.getElementById("yearGrid");
-  const calendarContainer = document.querySelector(".calendar-container");
+  calendarGridEl.classList.remove("is-hidden");
+  yearGridEl.classList.add("is-hidden");
+  calendarContainerEl.classList.remove("year-view");
 
-  // Show month view, hide year view
-  calendarGrid.style.display = "block";
-  yearGrid.style.display = "none";
-  calendarContainer.classList.remove("year-view");
+  monthYearEl.textContent = `${MONTH_NAMES[displayMonth]} ${displayYear}`;
+  currentDateEl.textContent = `Today: ${DAY_NAMES[today.getDay()]}, ${MONTH_NAMES[today.getMonth()]} ${today.getDate()}`;
 
-  const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-  const days = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-  ];
-
-  monthYear.textContent = `${months[displayMonth]} ${displayYear}`;
-
-  const today = new Date();
-  currentDateEl.textContent = `Today: ${days[today.getDay()]}, ${months[today.getMonth()]
-    } ${today.getDate()}`;
-
-  daysContainer.innerHTML = "";
-
-  const firstDayOfMonth = new Date(displayYear, displayMonth, 1).getDay();
-  // Adjust for Monday start (0=Sunday, 1=Monday, etc.)
-  const firstDay = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1;
+  const daysFragment = document.createDocumentFragment();
+  const firstDay = getMondayFirstIndex(new Date(displayYear, displayMonth, 1).getDay());
   const daysInMonth = new Date(displayYear, displayMonth + 1, 0).getDate();
   const daysInPrevMonth = new Date(displayYear, displayMonth, 0).getDate();
 
   for (let i = firstDay - 1; i >= 0; i--) {
-    const dayDiv = document.createElement("div");
-    dayDiv.className = "day other-month";
-    dayDiv.textContent = daysInPrevMonth - i;
-    daysContainer.appendChild(dayDiv);
+    daysFragment.appendChild(createDiv("day other-month", String(daysInPrevMonth - i)));
   }
 
   for (let day = 1; day <= daysInMonth; day++) {
-    const dayDiv = document.createElement("div");
-    dayDiv.className = "day";
-    dayDiv.textContent = day;
+    const dayDiv = createDiv("day", String(day));
 
-    if (
-      day === today.getDate() &&
-      displayMonth === today.getMonth() &&
-      displayYear === today.getFullYear()
-    ) {
+    if (isToday(day, displayMonth, displayYear)) {
       dayDiv.classList.add("today");
     }
 
-    daysContainer.appendChild(dayDiv);
+    daysFragment.appendChild(dayDiv);
   }
 
   const totalCells = firstDay + daysInMonth;
   const remainingCells = totalCells % 7 === 0 ? 0 : 7 - (totalCells % 7);
 
   for (let i = 1; i <= remainingCells; i++) {
-    const dayDiv = document.createElement("div");
-    dayDiv.className = "day other-month";
-    dayDiv.textContent = i;
-    daysContainer.appendChild(dayDiv);
+    daysFragment.appendChild(createDiv("day other-month", String(i)));
   }
+
+  calendarDaysEl.replaceChildren(daysFragment);
 }
 
 function renderYearView() {
-  const monthYear = document.getElementById("monthYear");
-  const currentDateEl = document.getElementById("currentDate");
-  const monthsContainer = document.getElementById("monthsContainer");
-  const calendarGrid = document.querySelector(".calendar-grid");
-  const yearGrid = document.getElementById("yearGrid");
-  const calendarContainer = document.querySelector(".calendar-container");
+  calendarGridEl.classList.add("is-hidden");
+  yearGridEl.classList.remove("is-hidden");
+  calendarContainerEl.classList.add("year-view");
 
-  // Show year view, hide month view
-  calendarGrid.style.display = "none";
-  yearGrid.style.display = "block";
-  calendarContainer.classList.add("year-view");
-
-  const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-
-  monthYear.textContent = displayYear;
+  monthYearEl.textContent = String(displayYear);
   currentDateEl.textContent = `Year View: ${displayYear}`;
-
-  monthsContainer.innerHTML = "";
-
-  const today = new Date();
+  const monthsFragment = document.createDocumentFragment();
 
   for (let month = 0; month < 12; month++) {
-    const monthCard = document.createElement("div");
-    monthCard.className = "month-card";
+    const monthCard = createDiv("month-card");
 
     if (month === today.getMonth() && displayYear === today.getFullYear()) {
       monthCard.classList.add("current-month");
@@ -146,47 +128,27 @@ function renderYearView() {
       renderCalendar();
     });
 
-    const monthName = document.createElement("div");
-    monthName.className = "month-name";
-    monthName.textContent = months[month];
+    const monthName = createDiv("month-name", MONTH_NAMES[month]);
 
-    // Add weekday headers for year view
-    const weekdaysRow = document.createElement("div");
-    weekdaysRow.className = "month-weekdays";
-    const weekdayNames = ["M", "T", "W", "T", "F", "S", "S"];
-    weekdayNames.forEach(day => {
-      const weekdayDiv = document.createElement("div");
-      weekdayDiv.className = "month-weekday";
-      weekdayDiv.textContent = day;
+    const weekdaysRow = createDiv("month-weekdays");
+    MINI_WEEKDAY_NAMES.forEach((day) => {
+      const weekdayDiv = createDiv("month-weekday", day);
       weekdaysRow.appendChild(weekdayDiv);
     });
 
-    const monthPreview = document.createElement("div");
-    monthPreview.className = "month-preview";
+    const monthPreview = createDiv("month-preview");
 
-    // Create mini calendar preview
-    const firstDayOfMonth = new Date(displayYear, month, 1).getDay();
-    const firstDay = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1;
+    const firstDay = getMondayFirstIndex(new Date(displayYear, month, 1).getDay());
     const daysInMonth = new Date(displayYear, month + 1, 0).getDate();
 
-    // Add empty cells for days before month starts
     for (let i = 0; i < firstDay; i++) {
-      const emptyDay = document.createElement("div");
-      emptyDay.className = "month-preview-day";
-      monthPreview.appendChild(emptyDay);
+      monthPreview.appendChild(createDiv("month-preview-day"));
     }
 
-    // Add days of the month
     for (let day = 1; day <= daysInMonth; day++) {
-      const dayDiv = document.createElement("div");
-      dayDiv.className = "month-preview-day";
-      dayDiv.textContent = day;
+      const dayDiv = createDiv("month-preview-day", String(day));
 
-      if (
-        day === today.getDate() &&
-        month === today.getMonth() &&
-        displayYear === today.getFullYear()
-      ) {
+      if (isToday(day, month, displayYear)) {
         dayDiv.classList.add("today");
       }
 
@@ -196,8 +158,10 @@ function renderYearView() {
     monthCard.appendChild(monthName);
     monthCard.appendChild(weekdaysRow);
     monthCard.appendChild(monthPreview);
-    monthsContainer.appendChild(monthCard);
+    monthsFragment.appendChild(monthCard);
   }
+
+  monthsContainerEl.replaceChildren(monthsFragment);
 }
 
 function changeMonth(direction) {
@@ -234,21 +198,23 @@ function toggleView() {
 }
 
 function updateViewToggleButton() {
-  const viewToggleBtn = document.getElementById("viewToggleBtn");
-  viewToggleBtn.textContent = currentView === "month" ? "Year" : "Month";
+  viewToggleBtnEl.textContent = currentView === "month" ? "Year" : "Month";
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-  document
-    .getElementById("prevBtn")
-    .addEventListener("click", () => changeMonth(-1));
-  document
-    .getElementById("nextBtn")
-    .addEventListener("click", () => changeMonth(1));
+document.addEventListener("DOMContentLoaded", () => {
+  monthYearEl = document.getElementById("monthYear");
+  currentDateEl = document.getElementById("currentDate");
+  calendarDaysEl = document.getElementById("calendarDays");
+  calendarGridEl = document.querySelector(".calendar-grid");
+  yearGridEl = document.getElementById("yearGrid");
+  monthsContainerEl = document.getElementById("monthsContainer");
+  calendarContainerEl = document.querySelector(".calendar-container");
+  viewToggleBtnEl = document.getElementById("viewToggleBtn");
+
+  document.getElementById("prevBtn").addEventListener("click", () => changeMonth(-1));
+  document.getElementById("nextBtn").addEventListener("click", () => changeMonth(1));
   document.getElementById("todayBtn").addEventListener("click", goToToday);
-  document
-    .getElementById("viewToggleBtn")
-    .addEventListener("click", toggleView);
+  viewToggleBtnEl.addEventListener("click", toggleView);
 
   updateViewToggleButton();
   renderCalendar();
