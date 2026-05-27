@@ -37,6 +37,18 @@
     <div class="year-grid is-hidden" id="yearGrid">
       <div class="months" id="monthsContainer"></div>
     </div>
+
+    <!-- Note Modal -->
+    <div class="modal-overlay" id="noteModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 id="modalDateTitle">Note</h3>
+          <button class="close-btn" id="closeModalBtn" aria-label="Close">&times;</button>
+        </div>
+        <textarea id="noteText" placeholder="Write a note for this day..."></textarea>
+        <button class="save-note-btn" id="saveNoteBtn">Save Note</button>
+      </div>
+    </div>
   </div>
 
   <script src="calendar.js" defer></script>

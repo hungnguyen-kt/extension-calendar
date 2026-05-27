@@ -1,26 +1,11 @@
 const MONTH_NAMES = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"
 ];
 
 const DAY_NAMES = [
-  "Sunday",
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
+  "Sunday", "Monday", "Tuesday", "Wednesday",
+  "Thursday", "Friday", "Saturday"
 ];
 
 const MINI_WEEKDAY_NAMES = ["M", "T", "W", "T", "F", "S", "S"];
@@ -38,6 +23,17 @@ let yearGridEl;
 let monthsContainerEl;
 let calendarContainerEl;
 let viewToggleBtnEl;
+
+// Modal elements
+let noteModalEl;
+let modalDateTitleEl;
+let noteTextEl;
+let saveNoteBtnEl;
+let closeModalBtnEl;
+let currentEditingDateStr = "";
+
+// State
+let notesData = {};
 
 function getMondayFirstIndex(dayIndex) {
   return dayIndex === 0 ? 6 : dayIndex - 1;
@@ -60,12 +56,25 @@ function createDiv(className, textContent = "") {
   return element;
 }
 
-function renderCalendar() {
-  if (currentView === "month") {
-    renderMonthView();
-  } else {
-    renderYearView();
+function withViewTransition(callback) {
+  if (!document.startViewTransition) {
+    callback();
+    return;
   }
+  document.startViewTransition(() => {
+    callback();
+  });
+}
+
+function renderCalendar() {
+  withViewTransition(() => {
+    if (currentView === "month") {
+      renderMonthView();
+    } else {
+      renderYearView();
+    }
+  });
+  saveViewState();
 }
 
 function renderMonthView() {
@@ -92,6 +101,23 @@ function renderMonthView() {
       dayDiv.classList.add("today");
     }
 
+    const currentDateRendered = new Date(displayYear, displayMonth, day);
+    const todayDateOnly = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    const isPast = currentDateRendered < todayDateOnly;
+
+    if (isPast) {
+      dayDiv.classList.add("past-day");
+    }
+
+    const dateStr = `${displayYear}-${displayMonth}-${day}`;
+    if (notesData[dateStr] && notesData[dateStr].trim() !== "") {
+      dayDiv.appendChild(createDiv("note-indicator"));
+    }
+
+    if (!isPast) {
+      dayDiv.addEventListener("click", () => openNoteModal(day, displayMonth, displayYear));
+    }
+    
     daysFragment.appendChild(dayDiv);
   }
 
@@ -183,7 +209,6 @@ function changeMonth(direction) {
 }
 
 function goToToday() {
-  const today = new Date();
   displayMonth = today.getMonth();
   displayYear = today.getFullYear();
   currentView = "month";
@@ -201,6 +226,72 @@ function updateViewToggleButton() {
   viewToggleBtnEl.textContent = currentView === "month" ? "Year" : "Month";
 }
 
+// Storage Functions
+async function saveViewState() {
+  if (chrome && chrome.storage) {
+    await chrome.storage.local.set({
+      lastView: {
+        month: displayMonth,
+        year: displayYear,
+        view: currentView
+      }
+    });
+  }
+}
+
+async function loadDataAndInit() {
+  if (chrome && chrome.storage) {
+    const data = await chrome.storage.local.get(["lastView", "notes"]);
+    if (data.lastView) {
+      displayMonth = data.lastView.month;
+      displayYear = data.lastView.year;
+      currentView = data.lastView.view;
+    }
+    if (data.notes) {
+      notesData = data.notes;
+    }
+  }
+  updateViewToggleButton();
+  // Call inner functions directly on first load without view transition animation
+  if (currentView === "month") {
+    renderMonthView();
+  } else {
+    renderYearView();
+  }
+}
+
+// Modal Functions
+function openNoteModal(day, month, year) {
+  currentEditingDateStr = `${year}-${month}-${day}`;
+  modalDateTitleEl.textContent = `${MONTH_NAMES[month]} ${day}, ${year}`;
+  noteTextEl.value = notesData[currentEditingDateStr] || "";
+  noteModalEl.classList.add("active");
+  noteTextEl.focus();
+}
+
+function closeNoteModal() {
+  noteModalEl.classList.remove("active");
+  currentEditingDateStr = "";
+}
+
+async function saveNote() {
+  if (!currentEditingDateStr) return;
+  const noteContent = noteTextEl.value.trim();
+  
+  if (noteContent) {
+    notesData[currentEditingDateStr] = noteContent;
+  } else {
+    delete notesData[currentEditingDateStr];
+  }
+  
+  if (chrome && chrome.storage) {
+    await chrome.storage.local.set({ notes: notesData });
+  }
+  
+  closeNoteModal();
+  renderCalendar(); // Re-render to show/hide note indicator
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   monthYearEl = document.getElementById("monthYear");
   currentDateEl = document.getElementById("currentDate");
@@ -211,11 +302,26 @@ document.addEventListener("DOMContentLoaded", () => {
   calendarContainerEl = document.querySelector(".calendar-container");
   viewToggleBtnEl = document.getElementById("viewToggleBtn");
 
+  // Modal elements
+  noteModalEl = document.getElementById("noteModal");
+  modalDateTitleEl = document.getElementById("modalDateTitle");
+  noteTextEl = document.getElementById("noteText");
+  saveNoteBtnEl = document.getElementById("saveNoteBtn");
+  closeModalBtnEl = document.getElementById("closeModalBtn");
+
   document.getElementById("prevBtn").addEventListener("click", () => changeMonth(-1));
   document.getElementById("nextBtn").addEventListener("click", () => changeMonth(1));
   document.getElementById("todayBtn").addEventListener("click", goToToday);
   viewToggleBtnEl.addEventListener("click", toggleView);
 
-  updateViewToggleButton();
-  renderCalendar();
+  closeModalBtnEl.addEventListener("click", closeNoteModal);
+  saveNoteBtnEl.addEventListener("click", saveNote);
+  
+  noteModalEl.addEventListener("click", (e) => {
+    if (e.target === noteModalEl) {
+      closeNoteModal();
+    }
+  });
+
+  loadDataAndInit();
 });

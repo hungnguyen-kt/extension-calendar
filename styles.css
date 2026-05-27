@@ -1,30 +1,40 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
+
 :root {
   /* Light mode colors */
-  --bg-color: #ffffff;
-  --text-color: #333333;
-  --header-text: #000000;
+  --bg-gradient: linear-gradient(135deg, #f6f8fd 0%, #e9f0f9 100%);
+  --glass-bg: rgba(255, 255, 255, 0.6);
+  --glass-border: rgba(255, 255, 255, 0.5);
+  --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+  --text-color: #2d3748;
+  --header-text: #1a202c;
   --accent-color: #ff3b30;
-  --weekday-color: #6a5af9;
-  --nav-btn-bg: rgba(255, 255, 255, 0.15);
-  --nav-btn-hover: rgba(255, 255, 255, 0.25);
-  --day-hover: #e6e9f5;
-  --other-month-color: #999999;
-  --border-color: #e0e0e0;
+  --weekday-color: #667eea;
+  --nav-btn-bg: rgba(255, 255, 255, 0.4);
+  --nav-btn-hover: rgba(255, 255, 255, 0.8);
+  --day-hover: rgba(255, 255, 255, 0.9);
+  --other-month-color: #a0aec0;
+  --border-color: rgba(255, 255, 255, 0.3);
+  --modal-bg: rgba(255, 255, 255, 0.85);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     /* Dark mode colors */
-    --bg-color: #1a1a1a;
-    --text-color: #ffffff;
-    --header-text: #ffffff;
+    --bg-gradient: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+    --glass-bg: rgba(26, 32, 44, 0.6);
+    --glass-border: rgba(255, 255, 255, 0.05);
+    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+    --text-color: #e2e8f0;
+    --header-text: #f7fafc;
     --accent-color: #ff453a;
-    --weekday-color: #8b7cf6;
-    --nav-btn-bg: rgba(255, 255, 255, 0.1);
-    --nav-btn-hover: rgba(255, 255, 255, 0.2);
-    --day-hover: #2d2d2d;
-    --other-month-color: #666666;
-    --border-color: #333333;
+    --weekday-color: #a3bffa;
+    --nav-btn-bg: rgba(255, 255, 255, 0.05);
+    --nav-btn-hover: rgba(255, 255, 255, 0.15);
+    --day-hover: rgba(255, 255, 255, 0.1);
+    --other-month-color: #718096;
+    --border-color: rgba(255, 255, 255, 0.05);
+    --modal-bg: rgba(26, 32, 44, 0.85);
   }
 }
 
@@ -32,13 +42,16 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Outfit', sans-serif;
 }
 
 body {
-  background: var(--bg-color);
+  background: var(--bg-gradient);
   color: var(--text-color);
-  transition: background-color 0.3s ease, color 0.3s ease;
+  min-height: 400px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .is-hidden {
@@ -46,28 +59,30 @@ body {
 }
 
 .calendar-container {
-  background: var(--bg-color);
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  border-radius: 20px;
   overflow: hidden;
-  max-width: 800px;
-  min-width: 400px;
-  width: 100%;
-  padding: 16px;
-  transition: max-width 0.3s ease;
+  width: 400px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
   gap: 16px;
+  position: relative;
 }
 
 .calendar-container.year-view {
-  max-width: 1200px;
-  min-width: 800px;
+  width: 800px;
 }
 
 .calendar-header {
-  background: var(--bg-color);
   color: var(--header-text);
   text-align: center;
   position: relative;
+  view-transition-name: calendar-header;
 }
 
 .nav-buttons {
@@ -81,57 +96,64 @@ body {
   background: var(--nav-btn-bg);
   border: 1px solid var(--border-color);
   color: var(--text-color);
-  padding: 10px 20px;
-  border-radius: 10px;
+  padding: 8px 16px;
+  border-radius: 12px;
   cursor: pointer;
-  font-size: 1.1em;
-  transition: background-color 0.25s ease, transform 0.25s ease;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.25s ease;
   backdrop-filter: blur(4px);
 }
 
 .nav-btn:hover {
   background: var(--nav-btn-hover);
-  transform: scale(1.05);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.nav-btn:active {
+  transform: translateY(0);
 }
 
 .calendar-header h1 {
-  font-size: 1.3em;
+  font-size: 1.5rem;
   text-transform: capitalize;
-  letter-spacing: 1px;
   color: var(--accent-color);
-  font-weight: bold;
+  font-weight: 700;
   margin-bottom: 4px;
 }
 
 .calendar-header p {
-  font-size: 1em;
-  opacity: 0.9;
-  color: var(--header-text);
+  font-size: 0.95rem;
+  opacity: 0.8;
+  font-weight: 400;
 }
 
 .calendar-grid {
   min-height: 295px;
+  view-transition-name: calendar-grid;
 }
 
 .weekdays {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 10px;
-  margin-bottom: 10px;
+  gap: 8px;
+  margin-bottom: 12px;
 }
 
 .weekday {
   text-align: center;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--weekday-color);
-  padding: 10px 0;
-  font-size: 0.9em;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .days {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 10px;
+  gap: 8px;
 }
 
 .day {
@@ -139,24 +161,27 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.1em;
-  transition: background-color 0.25s ease, transform 0.25s ease, color 0.25s ease;
+  font-size: 1.05rem;
+  font-weight: 600;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   color: var(--text-color);
   border-radius: 50%;
-  font-weight: bold;
-  cursor: default;
+  cursor: pointer;
+  position: relative;
   user-select: none;
 }
 
 .day:hover {
   background: var(--day-hover);
-  transform: scale(1.4);
+  transform: scale(1.1);
   color: var(--accent-color);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 }
 
 .day.empty {
   background: transparent;
   box-shadow: none;
+  cursor: default;
 }
 
 .day.empty:hover {
@@ -166,35 +191,60 @@ body {
 .day.today {
   background: var(--accent-color);
   color: white;
-  font-weight: bold;
-  box-shadow: 0 4px 12px rgba(255, 59, 48, 0.25);
+  box-shadow: 0 4px 12px rgba(255, 59, 48, 0.3);
+}
+
+.day.past-day {
+  opacity: 0.6;
+  color: var(--other-month-color);
+  cursor: default;
+  pointer-events: none;
 }
 
 .day.other-month {
-  opacity: 0.35;
+  opacity: 0.4;
   color: var(--other-month-color);
+}
+
+.note-indicator {
+  position: absolute;
+  bottom: 4px;
+  width: 5px;
+  height: 5px;
+  background-color: var(--weekday-color);
+  border-radius: 50%;
+}
+
+.day.today .note-indicator {
+  background-color: white;
+}
+
+.year-grid {
+  view-transition-name: year-grid;
 }
 
 .months {
   display: grid;
   grid-template-columns: repeat(4, minmax(175px, 1fr));
-  gap: 8px;
+  gap: 12px;
   max-width: 100%;
   justify-content: center;
 }
 
 .month-card {
-  background: var(--bg-color);
+  background: var(--nav-btn-bg);
   border: 1px solid var(--border-color);
-  border-radius: 12px;
-  padding: 15px;
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 16px;
+  padding: 16px;
+  transition: all 0.3s ease;
   cursor: pointer;
+  backdrop-filter: blur(4px);
 }
 
 .month-card:hover {
   background: var(--day-hover);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  transform: translateY(-4px);
+  box-shadow: var(--glass-shadow);
 }
 
 .month-card.current-month {
@@ -204,15 +254,14 @@ body {
 }
 
 .month-card.current-month:hover {
-  background: var(--accent-color);
-  opacity: 0.9;
+  box-shadow: 0 8px 24px rgba(255, 59, 48, 0.3);
 }
 
 .month-name {
-  font-size: 1.1em;
-  font-weight: bold;
+  font-size: 1.15rem;
+  font-weight: 700;
   text-align: center;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
   color: var(--text-color);
 }
 
@@ -220,21 +269,19 @@ body {
   color: white;
 }
 
-/* Weekday headers in year view */
 .month-weekdays {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 1px;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
 }
 
 .month-weekday {
-  font-size: 0.6em;
-  font-weight: 600;
+  font-size: 0.6rem;
+  font-weight: 700;
   text-align: center;
   color: var(--weekday-color);
-  padding: 2px 0;
-  opacity: 0.8;
+  opacity: 0.9;
 }
 
 .month-card.current-month .month-weekday {
@@ -244,8 +291,9 @@ body {
 .month-preview {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 1px;
-  font-size: 0.65em;
+  gap: 2px;
+  font-size: 0.65rem;
+  font-weight: 600;
 }
 
 .month-preview-day {
@@ -254,27 +302,129 @@ body {
   align-items: center;
   justify-content: center;
   color: var(--text-color);
-  opacity: 0.7;
+  opacity: 0.6;
   border-radius: 50%;
 }
 
 .month-card.current-month .month-preview-day {
-  color: white;
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .month-preview-day.today {
-  background: rgba(255, 255, 255, 0.3);
-  font-weight: bold;
+  background: rgba(255, 255, 255, 0.4);
+  font-weight: 800;
   opacity: 1;
 }
 
-@media (max-width: 600px) {
-  .months {
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 15px;
-  }
+/* Modal styles for notes */
+.modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  border-radius: 20px;
+}
 
-  .month-card {
-    padding: 10px;
-  }
+.modal-overlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.modal-content {
+  background: var(--modal-bg);
+  padding: 24px;
+  border-radius: 16px;
+  width: 85%;
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  transform: translateY(20px);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.modal-overlay.active .modal-content {
+  transform: translateY(0);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.modal-header h3 {
+  font-size: 1.2rem;
+  color: var(--text-color);
+}
+
+.close-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--other-month-color);
+  transition: color 0.2s ease;
+}
+
+.close-btn:hover {
+  color: var(--text-color);
+}
+
+textarea#noteText {
+  width: 100%;
+  height: 100px;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background: var(--nav-btn-bg);
+  color: var(--text-color);
+  font-size: 1rem;
+  resize: none;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+textarea#noteText:focus {
+  border-color: var(--weekday-color);
+}
+
+.save-note-btn {
+  width: 100%;
+  padding: 12px;
+  margin-top: 16px;
+  background: var(--accent-color);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.save-note-btn:hover {
+  background-color: #e0352b;
+}
+
+.save-note-btn:active {
+  transform: scale(0.98);
+}
+
+/* View Transitions */
+::view-transition-old(calendar-grid),
+::view-transition-new(calendar-grid),
+::view-transition-old(year-grid),
+::view-transition-new(year-grid) {
+  animation-duration: 0.4s;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
